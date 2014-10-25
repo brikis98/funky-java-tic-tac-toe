@@ -56,4 +56,6 @@ a tie.
 `GameState` and uses `Stream.iterate` and `GameState.makeMove` to generate new `GameStates` based on user input until
 `Gametate.isGameOver` is true.
  
+# License
  
+This code is available under the MIT license. See the LICENSE file for more info.
