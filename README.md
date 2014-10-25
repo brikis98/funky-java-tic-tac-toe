@@ -22,8 +22,8 @@ Player O, it's your turn, enter a number:
 Make sure you have [sbt](http://www.scala-sbt.org/) and 
 [Java 8](http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html) installed on your system.
 
-To run the tic-tac-toe game: `sbt run`
-To run the tests: `sbt test`
+* To run the tic-tac-toe game: `sbt run`
+* To run the tests: `sbt test`
 
 See the [http://www.scala-sbt.org/0.13/tutorial/Running.html](SBT documentation) for other commands.
 
@@ -53,6 +53,34 @@ is a winner or a tie. The `findWinner` method returns the winner of the game or 
 * `TicTacToe.java`: this class contains the `main` method and is the only one that performs I/O. It starts with an empty
 `GameState` and uses `Stream.iterate` and `GameState.makeMove` to generate new `GameStates` based on user input until
 `Gametate.isGameOver` is true.
+
+# Thoughts
+
+Overall, Java 8 is a massive step forward for the language, but I'm not sure it's enough. It took much longer to write 
+this app in a functional style than I expected due to lots of annoyances:
+
+* The higher order functions in the `Stream API`, such as `map`, `reduce`, and `filter`, are all designed to work in 
+parallel. This may be useful for performance reasons, but to support parallel operation, the signatures of some of these
+methods are sometimes a little different than the equivalent methods in all other programming languages (e.g. there is 
+no `foldLeft` or `foldRight` because a parallel operation doesn't go linearly from one side to the other).
+* The need to convert Java collections to a `Stream` (e.g. by calling `.stream()`) and back (e.g. by calling 
+`.collect(Collectors.toList())`) in order to use higher order functions is verbose. I wish I could just call `map` 
+directly on a `List` or `Set`.
+* Some code, such as determining if a `Board` had a winner, was much harder to do in an immutable fashion using the 
+`Stream` API than with good old fashioned `for`, `break`, and `return`. If anyone knows a cleaner pattern for 
+implementing `Board.findWinner()`, let me know.
+* It is tedious and verbose to mark every variable as `final`. I wish immutable was the default or there was a more
+concise construct, such as using `val` vs `var` in Scala.
+* It's not clear why numeric streams need special treatment, such as the `IntStream` and `DoubleStream` classes and the
+`mapToInt` and `mapToDouble` higher order functions.
+* I sorely missed Scala's [sequence comprehensions](http://docs.scala-lang.org/tutorials/tour/sequence-comprehensions.html)
+when I had to chain many `map` and `flatMap` calls together. 
+* Most collection APIs in Java do not provide immutability guarantees, not even the Java 8 `Stream` APIs, so you have 
+to be extra careful to use persistent collections or Guava's immutable collections.
+* While some Java code uses `Optional`, most still uses `null`. And, of course, you could even set an `Optional` 
+variable to null, so it's still very easy to hit a `NullPointerException`.  
+* The compile errors, at least in IntelliJ, were less helpful than usual. Many of them seemed to be caused by a 
+minor error in a type signature causing type inference to fail and return a less-than-helpful "cyclic reference" error.
  
 # License
  

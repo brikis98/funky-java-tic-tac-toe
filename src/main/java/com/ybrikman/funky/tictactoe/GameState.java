@@ -38,7 +38,7 @@ public class GameState {
   @Override
   public boolean equals(Object other) {
     if (other instanceof GameState) {
-      GameState otherGameState = (GameState) other;
+      final GameState otherGameState = (GameState) other;
       return board.equals(otherGameState.board) && currentPlayer == otherGameState.currentPlayer;
     }
 
@@ -47,9 +47,9 @@ public class GameState {
 
   @Override
   public int hashCode() {
-    int result = board != null ? board.hashCode() : 0;
-    result = 31 * result + (currentPlayer != null ? currentPlayer.hashCode() : 0);
-    return result;
+    final int boardHash = board != null ? board.hashCode() : 0;
+    final int playerHash = currentPlayer != null ? currentPlayer.hashCode() : 0;
+    return 31 * boardHash + playerHash;
   }
 
   @Override
